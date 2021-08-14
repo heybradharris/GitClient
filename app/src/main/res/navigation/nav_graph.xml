@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    app:startDestination="@id/findRepositoryFragment">
+    <fragment
+        android:id="@+id/findRepositoryFragment"
+        android:name="com.example.aclass.findrepository.FindRepositoryFragment"
+        android:label="@string/label_find_repository"
+        tools:layout="@layout/fragment_find_repository" />
+</navigation>
