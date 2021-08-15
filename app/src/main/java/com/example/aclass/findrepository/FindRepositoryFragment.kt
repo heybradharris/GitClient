@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import androidx.core.view.get
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import com.example.aclass.MainActivity
 import com.example.aclass.R
 import com.example.aclass.common.util.event.EventObserver
 import com.example.aclass.common.util.getColorFromAttr
@@ -68,7 +69,7 @@ class FindRepositoryFragment : Fragment() {
             when (event) {
                 is ViewEvent.NavigateToPullRequests -> { }
                 is ViewEvent.RandomRepo -> { chooseRandomRepo() }
-                is ViewEvent.Error -> { }
+                is ViewEvent.Error -> { (requireActivity() as MainActivity).showSnackbar(event.stringId) }
             }
         })
     }
@@ -101,8 +102,9 @@ class FindRepositoryFragment : Fragment() {
             for (i in 0 until numChildren + 10) {
                 prevChip?.chipBackgroundColor = defaultColorStateList
                 currentChip.chipBackgroundColor = ColorStateList.valueOf(yellow)
+                val numerator = i + 1
                 delay(duration - (duration * interpolator.getInterpolation(
-                    if (i == 0) 0.20f else 1 - (i / (numChildren + 9f))
+                    1 - (numerator / (numChildren + 11f))
                 )).toLong())
                 prevChip = currentChip
                 currentChip = binding.flowLayout[Random.nextInt(numChildren)] as Chip

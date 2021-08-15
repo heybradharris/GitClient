@@ -1,9 +1,11 @@
 package com.example.aclass.findrepository
 
+import androidx.annotation.StringRes
 import androidx.databinding.ObservableField
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.aclass.R
 import com.example.aclass.common.util.event.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -29,16 +31,23 @@ class FindRepositoryFragmentViewModel @Inject constructor() : ViewModel() {
     )
 
     fun onFindRepositoryButtonClicked() {
-
+        if (isUserInputValid()) {
+            // naviagte
+        } else {
+            _viewEvents.value = Event(ViewEvent.Error(R.string.find_repository_bad_input))
+        }
     }
 
     fun onRandomRepositoryButtonClicked() {
         _viewEvents.value = Event(ViewEvent.RandomRepo)
     }
 
+    private fun isUserInputValid() =
+        Regex("^[A-Za-z0-9_.][A-Za-z0-9_.-]+(/[A-Za-z0-9_.-]+)\$").matches(userInput.get() ?: "")
+
     sealed class ViewEvent {
         class NavigateToPullRequests(val owner: String, val repo: String) : ViewEvent()
         object RandomRepo : ViewEvent()
-        class Error(val message: String) : ViewEvent()
+        class Error(@StringRes val stringId: Int) : ViewEvent()
     }
 }

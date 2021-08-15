@@ -2,9 +2,11 @@ package com.example.aclass
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.annotation.StringRes
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI.setupActionBarWithNavController
 import com.example.aclass.databinding.ActivityMainBinding
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -29,5 +31,10 @@ class MainActivity : AppCompatActivity() {
     private fun setupToolbar() {
         setSupportActionBar(binding.toolbar)
         setupActionBarWithNavController(this, navController)
+    }
+
+    fun showSnackbar(@StringRes stringId: Int) {
+        Snackbar.make(binding.root, stringId, Snackbar.LENGTH_SHORT)
+            .show()
     }
 }
