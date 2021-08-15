@@ -1,13 +1,23 @@
 package com.example.aclass.findrepository
 
+import androidx.databinding.ObservableField
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.aclass.common.util.event.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
 class FindRepositoryFragmentViewModel @Inject constructor() : ViewModel() {
 
-    val repositories = listOf(
+    private val _viewEvents = MutableLiveData<Event<ViewEvent>>()
+    val navigateToPullRequests: LiveData<Event<ViewEvent>>
+        get() = _viewEvents
+
+    val userInput = ObservableField<String>()
+
+    val repoTitles = listOf(
         "square/http",
         "JakeWharton/butterknife",
         "google/gson",
@@ -18,4 +28,17 @@ class FindRepositoryFragmentViewModel @Inject constructor() : ViewModel() {
         "facebook/fresco"
     )
 
+    fun onFindRepositoryButtonClicked() {
+
+    }
+
+    fun onRandomRepositoryButtonClicked() {
+        _viewEvents.value = Event(ViewEvent.RandomRepo)
+    }
+
+    sealed class ViewEvent {
+        class NavigateToPullRequests(val owner: String, val repo: String) : ViewEvent()
+        object RandomRepo : ViewEvent()
+        class Error(val message: String) : ViewEvent()
+    }
 }
