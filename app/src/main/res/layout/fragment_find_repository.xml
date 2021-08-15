@@ -33,7 +33,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/repo_text_input_layout"
+                android:id="@+id/input_layout_repo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -45,7 +45,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/flow_layout">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/repo_text_edit_text"
+                    android:id="@+id/edit_text_repo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@={viewModel.userInput}" />
@@ -62,7 +62,7 @@
                 android:textAllCaps="false"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/repo_text_input_layout" />
+                app:layout_constraintTop_toBottomOf="@+id/input_layout_repo" />
 
             <Button
                 android:id="@+id/random_repository_button"

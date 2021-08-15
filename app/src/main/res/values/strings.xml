@@ -5,4 +5,5 @@
     <string name="owner_slash_repository">owner/repository</string>
     <string name="find_repository">Find Repository</string>
     <string name="find_repository_bad_input">Please enter owner/repository</string>
+    <string name="label_pull_requests">Pull Requests</string>
 </resources>

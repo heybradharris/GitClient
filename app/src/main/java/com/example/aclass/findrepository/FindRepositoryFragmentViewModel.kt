@@ -7,11 +7,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.aclass.R
 import com.example.aclass.common.util.event.Event
-import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 
-@HiltViewModel
-class FindRepositoryFragmentViewModel @Inject constructor() : ViewModel() {
+class FindRepositoryFragmentViewModel : ViewModel() {
 
     private val _viewEvents = MutableLiveData<Event<ViewEvent>>()
     val navigateToPullRequests: LiveData<Event<ViewEvent>>
@@ -32,7 +29,9 @@ class FindRepositoryFragmentViewModel @Inject constructor() : ViewModel() {
 
     fun onFindRepositoryButtonClicked() {
         if (isUserInputValid()) {
-            // naviagte
+            val owner = userInput.get() ?: "".substringBefore('/')
+            val repo = userInput.get() ?: "".substringAfter('/')
+            _viewEvents.value = Event(ViewEvent.NavigateToPullRequests(owner, repo))
         } else {
             _viewEvents.value = Event(ViewEvent.Error(R.string.find_repository_bad_input))
         }

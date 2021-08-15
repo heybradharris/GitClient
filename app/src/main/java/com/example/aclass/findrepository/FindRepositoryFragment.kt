@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import androidx.core.view.get
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.findNavController
 import com.example.aclass.MainActivity
 import com.example.aclass.R
 import com.example.aclass.common.util.event.EventObserver
@@ -67,7 +68,7 @@ class FindRepositoryFragment : Fragment() {
     private fun observeViewEvents() {
         viewModel.navigateToPullRequests.observe(this, EventObserver { event ->
             when (event) {
-                is ViewEvent.NavigateToPullRequests -> { }
+                is ViewEvent.NavigateToPullRequests -> { navigateToPullRequests(event.owner, event.repo) }
                 is ViewEvent.RandomRepo -> { chooseRandomRepo() }
                 is ViewEvent.Error -> { (requireActivity() as MainActivity).showSnackbar(event.stringId) }
             }
@@ -80,10 +81,15 @@ class FindRepositoryFragment : Fragment() {
         viewModel.repoTitles.map { repoTitle ->
             val chip = Chip(requireContext()).apply {
                 text = repoTitle
-                setOnClickListener { binding.repoTextEditText.setText(repoTitle) }
+                setOnClickListener { binding.editTextRepo.setText(repoTitle) }
             }
             flowLayout.addView(chip)
         }
+    }
+
+    private fun navigateToPullRequests(owner: String, repo: String) {
+        val action = FindRepositoryFragmentDirections.startPullRequestsFragment(owner, repo)
+        binding.root.findNavController().navigate(action)
     }
 
     private fun chooseRandomRepo() {
@@ -112,7 +118,7 @@ class FindRepositoryFragment : Fragment() {
                     currentChip = binding.flowLayout[Random.nextInt(numChildren)] as Chip
                 }
             }
-            binding.repoTextEditText.setText(prevChip?.text)
+            binding.editTextRepo.setText(prevChip?.text)
             vibrate()
             delay(duration)
             prevChip?.chipBackgroundColor = defaultColorStateList

@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.annotation.StringRes
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI.setupActionBarWithNavController
 import com.example.aclass.databinding.ActivityMainBinding
 import com.google.android.material.snackbar.Snackbar
@@ -26,6 +27,11 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setupToolbar()
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        return navController.navigateUp()
+                || super.onSupportNavigateUp()
     }
 
     private fun setupToolbar() {
