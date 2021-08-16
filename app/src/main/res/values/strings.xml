@@ -3,7 +3,7 @@
     <string name="label_find_repository">Enter Repository</string>
     <string name="random_repository">Random Repository</string>
     <string name="owner_slash_repository">owner/repository</string>
-    <string name="find_repository">Find Repository</string>
+    <string name="show_pull_requests">Show Pull Requests</string>
     <string name="find_repository_bad_input">Please enter owner/repository</string>
     <string name="label_pull_requests">Pull Requests</string>
 </resources>

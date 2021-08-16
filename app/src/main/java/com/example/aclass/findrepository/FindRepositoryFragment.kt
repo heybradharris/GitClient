@@ -22,13 +22,14 @@ import com.example.aclass.databinding.FragmentFindRepositoryBinding
 import com.google.android.material.chip.Chip
 import com.example.aclass.findrepository.FindRepositoryFragmentViewModel.ViewEvent
 import com.google.android.material.animation.AnimationUtils
+import com.google.android.material.transition.MaterialSharedAxis
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 
 class FindRepositoryFragment : Fragment() {
 
-    private val viewModel: FindRepositoryFragmentViewModel by viewModels()
+    private val viewModel by viewModels<FindRepositoryFragmentViewModel>()
 
     private var _binding: FragmentFindRepositoryBinding? = null
     private val binding get() = _binding!!
@@ -37,6 +38,7 @@ class FindRepositoryFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setupTransitions()
         observeViewEvents()
     }
 
@@ -66,11 +68,11 @@ class FindRepositoryFragment : Fragment() {
     }
 
     private fun observeViewEvents() {
-        viewModel.navigateToPullRequests.observe(this, EventObserver { event ->
-            when (event) {
-                is ViewEvent.NavigateToPullRequests -> { navigateToPullRequests(event.owner, event.repo) }
+        viewModel.viewEvents.observe(this, EventObserver { viewEvent ->
+            when (viewEvent) {
+                is ViewEvent.NavigateToPullRequests -> { navigateToPullRequests(viewEvent.owner, viewEvent.repo) }
                 is ViewEvent.RandomRepo -> { chooseRandomRepo() }
-                is ViewEvent.Error -> { (requireActivity() as MainActivity).showSnackbar(event.stringId) }
+                is ViewEvent.Error -> { (requireActivity() as MainActivity).showSnackbar(viewEvent.stringId) }
             }
         })
     }
@@ -88,7 +90,11 @@ class FindRepositoryFragment : Fragment() {
     }
 
     private fun navigateToPullRequests(owner: String, repo: String) {
-        val action = FindRepositoryFragmentDirections.startPullRequestsFragment(owner, repo)
+        val action =
+            FindRepositoryFragmentDirections.actionFindRepositoryFragmentToPullRequestsFragment(
+                owner,
+                repo
+            )
         binding.root.findNavController().navigate(action)
     }
 
@@ -109,9 +115,11 @@ class FindRepositoryFragment : Fragment() {
                 prevChip?.chipBackgroundColor = defaultColorStateList
                 currentChip.chipBackgroundColor = ColorStateList.valueOf(yellow)
                 val numerator = i + 1
-                delay(duration - (duration * interpolator.getInterpolation(
-                    1 - (numerator / (numChildren + 11f))
-                )).toLong())
+                delay(
+                    duration - (duration * interpolator.getInterpolation(
+                        1 - (numerator / (numChildren + 11f))
+                    )).toLong()
+                )
                 prevChip = currentChip
                 currentChip = binding.flowLayout[Random.nextInt(numChildren)] as Chip
                 while (prevChip == currentChip) {
@@ -127,12 +135,20 @@ class FindRepositoryFragment : Fragment() {
         }
     }
 
+    private fun setupTransitions() {
+        exitTransition = MaterialSharedAxis(MaterialSharedAxis.Z, true)
+        reenterTransition = MaterialSharedAxis(MaterialSharedAxis.Z, false)
+    }
+
     private fun vibrate() {
         val v = (requireContext().getSystemService(Context.VIBRATOR_SERVICE) as Vibrator)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             v.vibrate(
-                VibrationEffect.createOneShot(150,
-                VibrationEffect.DEFAULT_AMPLITUDE))
+                VibrationEffect.createOneShot(
+                    150,
+                    VibrationEffect.DEFAULT_AMPLITUDE
+                )
+            )
         }
     }
 }

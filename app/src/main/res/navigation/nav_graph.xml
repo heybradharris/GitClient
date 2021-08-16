@@ -9,7 +9,7 @@
         android:label="@string/label_find_repository"
         tools:layout="@layout/fragment_find_repository" >
         <action
-            android:id="@+id/startPullRequestsFragment"
+            android:id="@+id/action_findRepositoryFragment_to_pullRequestsFragment"
             app:destination="@+id/pullRequestsFragment" />
     </fragment>
     <fragment
@@ -21,7 +21,7 @@
             android:name="owner"
             app:argType="string" />
         <argument
-            android:name="repository"
+            android:name="repo"
             app:argType="string" />
     </fragment>
 </navigation>

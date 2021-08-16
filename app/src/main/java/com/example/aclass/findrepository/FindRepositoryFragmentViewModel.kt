@@ -11,13 +11,13 @@ import com.example.aclass.common.util.event.Event
 class FindRepositoryFragmentViewModel : ViewModel() {
 
     private val _viewEvents = MutableLiveData<Event<ViewEvent>>()
-    val navigateToPullRequests: LiveData<Event<ViewEvent>>
+    val viewEvents: LiveData<Event<ViewEvent>>
         get() = _viewEvents
 
     val userInput = ObservableField<String>()
 
     val repoTitles = listOf(
-        "square/http",
+        "square/okhttp",
         "JakeWharton/butterknife",
         "google/gson",
         "square/retrofit",
@@ -29,8 +29,8 @@ class FindRepositoryFragmentViewModel : ViewModel() {
 
     fun onFindRepositoryButtonClicked() {
         if (isUserInputValid()) {
-            val owner = userInput.get() ?: "".substringBefore('/')
-            val repo = userInput.get() ?: "".substringAfter('/')
+            val owner = (userInput.get() ?: "").substringBefore('/')
+            val repo = (userInput.get() ?: "").substringAfter('/')
             _viewEvents.value = Event(ViewEvent.NavigateToPullRequests(owner, repo))
         } else {
             _viewEvents.value = Event(ViewEvent.Error(R.string.find_repository_bad_input))
