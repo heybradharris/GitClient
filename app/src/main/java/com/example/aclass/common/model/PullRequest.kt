@@ -5,6 +5,7 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class PullRequest(
+    @Json(name = "id") val id: Int,
     @Json(name = "diff_url") val diffUrl: String,
     @Json(name = "number") val number: Int,
     @Json(name = "state") val state: String,
