@@ -26,7 +26,10 @@ class PullRequestFragmentViewModel @Inject constructor(
     val viewState: LiveData<ViewState>
         get() = _viewState
 
-    private var pullRequests: List<PullRequest> = mutableListOf()
+    private var pullRequestItems: List<PullRequest> = mutableListOf()
+
+    private val openPullRequestItems: List<PullRequest>
+        get() = pullRequestItems.filter { it.state == "open" }
 
     init {
         getPullRequests()
@@ -36,17 +39,22 @@ class PullRequestFragmentViewModel @Inject constructor(
         _viewState.value = ViewState.Loading
         viewModelScope.launch(ioDispatcher) {
             try {
-                pullRequests = repoRepository.getPullRequests(args.owner, args.repo)
-                _viewState.postValue(ViewState.PullRequests(pullRequests))
+                pullRequestItems = repoRepository.getPullRequests(args.owner, args.repo)
+                _viewState.postValue(ViewState.PullRequests(pullRequestItems))
             } catch (exception: Exception) {
                 _viewState.postValue(ViewState.Error(R.string.pull_requests_failed_message))
             }
         }
     }
 
+    fun onChecked(isChecked: Boolean) {
+        val items = if (isChecked) openPullRequestItems else pullRequestItems
+        _viewState.value = ViewState.PullRequests(items)
+    }
+
     sealed class ViewState {
         object Loading : ViewState()
-        class PullRequests(val pullRequests: List<PullRequest>) : ViewState()
+        class PullRequests(val pullRequestItems: List<PullRequest>) : ViewState()
         class Error(@StringRes val stringId: Int) : ViewState()
     }
 }

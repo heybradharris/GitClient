@@ -23,7 +23,7 @@ class FindRepositoryFragmentViewModel : ViewModel() {
         "square/retrofit",
         "google/guava",
         "bumptech/glide",
-        "androidx/androidx",
+        "material-components/material-components-android",
         "facebook/fresco"
     )
 

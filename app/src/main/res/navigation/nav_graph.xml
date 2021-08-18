@@ -9,11 +9,11 @@
         android:label="@string/label_find_repository"
         tools:layout="@layout/fragment_find_repository" >
         <action
-            android:id="@+id/action_findRepositoryFragment_to_pullRequestsFragment"
-            app:destination="@+id/pullRequestsFragment" />
+            android:id="@+id/action_findRepositoryFragment_to_pullRequestFragment"
+            app:destination="@+id/pullRequestFragment" />
     </fragment>
     <fragment
-        android:id="@+id/pullRequestsFragment"
+        android:id="@+id/pullRequestFragment"
         android:name="com.example.aclass.pullrequests.PullRequestFragment"
         android:label="@string/label_pull_requests"
         tools:layout="@layout/fragment_pull_request">
@@ -22,6 +22,23 @@
             app:argType="string" />
         <argument
             android:name="repo"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_pullRequestFragment_to_diffFragment"
+            app:destination="@id/diffFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/diffFragment"
+        android:name="com.example.aclass.diff.DiffFragment"
+        tools:layout="@layout/fragment_diff">
+        <argument
+            android:name="owner"
+            app:argType="string" />
+        <argument
+            android:name="repo"
+            app:argType="string" />
+        <argument
+            android:name="number"
             app:argType="string" />
     </fragment>
 </navigation>

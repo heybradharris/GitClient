@@ -39,7 +39,6 @@ class FindRepositoryFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupTransitions()
-        observeViewEvents()
     }
 
     override fun onCreateView(
@@ -53,6 +52,7 @@ class FindRepositoryFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        observeViewEvents()
         isRandomRepoAnimationActive = false
         setupRepositoryChips()
         setupClickListeners()
@@ -69,7 +69,7 @@ class FindRepositoryFragment : Fragment() {
     }
 
     private fun observeViewEvents() {
-        viewModel.viewEvents.observe(this, EventObserver { viewEvent ->
+        viewModel.viewEvents.observe(viewLifecycleOwner, EventObserver { viewEvent ->
             when (viewEvent) {
                 is ViewEvent.NavigateToPullRequests -> { navigateToPullRequests(viewEvent.owner, viewEvent.repo) }
                 is ViewEvent.RandomRepo -> { chooseRandomRepo() }
@@ -92,7 +92,7 @@ class FindRepositoryFragment : Fragment() {
 
     private fun navigateToPullRequests(owner: String, repo: String) {
         val action =
-            FindRepositoryFragmentDirections.actionFindRepositoryFragmentToPullRequestsFragment(
+            FindRepositoryFragmentDirections.actionFindRepositoryFragmentToPullRequestFragment(
                 owner,
                 repo
             )

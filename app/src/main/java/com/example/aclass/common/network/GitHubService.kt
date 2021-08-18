@@ -8,7 +8,7 @@ import retrofit2.http.Path
 interface GitHubService {
 
     @Headers("accept: application/vnd.github.v3+json")
-    @GET("/repos/{owner}/{repo}/pulls")
+    @GET("/repos/{owner}/{repo}/pulls?state=all")
     suspend fun getPullRequests(
         @Path("owner") owner: String,
         @Path("repo") repo: String
