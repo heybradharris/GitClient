@@ -5,13 +5,17 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
-import com.example.aclass.R
+import androidx.navigation.fragment.findNavController
+import com.example.aclass.MainActivity
 import com.example.aclass.databinding.FragmentDiffBinding
-import com.example.aclass.databinding.FragmentPullRequestBinding
+import com.example.aclass.diff.DiffFragmentViewModel.ViewState
 import com.example.aclass.pullrequests.PullRequestFragmentViewModel
 import com.google.android.material.transition.MaterialSharedAxis
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class DiffFragment : Fragment() {
 
     private val viewModel by viewModels<DiffFragmentViewModel>()
@@ -30,6 +34,32 @@ class DiffFragment : Fragment() {
     ): View {
         _binding = FragmentDiffBinding.inflate(inflater, container, false)
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        observeViewState()
+    }
+
+    private fun observeViewState() {
+        viewModel.viewState.observe(viewLifecycleOwner, { viewState ->
+            when (viewState) {
+                is ViewState.Loading -> { showLoadingIndicator() }
+                is ViewState.Diff -> {
+                    binding.text.isVisible = true
+                    binding.text.text = viewState.data
+                }
+                is ViewState.Error -> {
+                    (requireActivity() as MainActivity).showSnackbar(viewState.stringId)
+                    findNavController().popBackStack()
+                }
+            }
+        })
+    }
+
+    private fun showLoadingIndicator() {
+        binding.text.isVisible = false
+        binding.progressIndicator.isVisible = true
     }
 
     private fun setupTransitions() {

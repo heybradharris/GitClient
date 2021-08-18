@@ -39,7 +39,7 @@ class PullRequestViewHolder(
     override fun onClick(v: View) {
         val diffUrl = pullRequest?.diffUrl ?: throw IllegalArgumentException("$TAG: diffUrl is not set")
 
-        val number = pullRequest?.number.toString() ?: throw IllegalArgumentException("$TAG: number is not set")
+        val number = pullRequest?.number ?: throw IllegalArgumentException("$TAG: number is not set")
 
         val path = diffUrl.substringAfter("com/").split("/")
 

@@ -13,4 +13,11 @@ interface GitHubService {
         @Path("owner") owner: String,
         @Path("repo") repo: String
     ): List<PullRequest>
+
+    @GET("https://github.com/{owner}/{repo}/pull/{number}.diff")
+    suspend fun getDiff(
+        @Path("owner") owner: String,
+        @Path("repo") repo: String,
+        @Path("number") number: Int
+    ): String
 }

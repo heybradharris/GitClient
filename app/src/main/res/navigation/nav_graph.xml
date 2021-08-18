@@ -39,6 +39,6 @@
             app:argType="string" />
         <argument
             android:name="number"
-            app:argType="string" />
+            app:argType="integer" />
     </fragment>
 </navigation>

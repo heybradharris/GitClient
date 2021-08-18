@@ -10,5 +10,5 @@ data class PullRequest(
     @Json(name = "number") val number: Int,
     @Json(name = "state") val state: String,
     @Json(name = "title") val title: String,
-    @Json(name = "body") val body: String
+    @Json(name = "body") val body: String?
 )
