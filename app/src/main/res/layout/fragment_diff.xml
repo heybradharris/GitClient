@@ -16,10 +16,20 @@
     android:transitionGroup="true"
     tools:context=".diff.DiffFragment">
 
-    <TextView
-        android:id="@+id/text"
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent">
+
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/text"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </HorizontalScrollView>
+    </androidx.core.widget.NestedScrollView>
 
     <com.google.android.material.progressindicator.LinearProgressIndicator
         android:id="@+id/progress_indicator"
@@ -27,5 +37,5 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:indeterminate="true"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 </FrameLayout>
