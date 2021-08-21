@@ -57,20 +57,14 @@ class DiffParser {
                         firstCommitLines = "\n"
                         secondCommitLines = "\n"
                     }
-                    // assign range starts
+
+                    // assign line number range starts
                     val filtered = line.substringAfter("@@")
                         .substringBefore("@@")
                         .filter { it.isDigit() || it == '+' ||  it == ','}
-                    println(filtered)
-                    // need another counter
-                    firstCommitCounter = listOf(
-                        filtered.substringBefore(',').toInt(),
-                        //filtered.substringAfter(',').substringBefore('+').toInt()
-                    ).maxOrNull() ?: -1
-                    secondCommitCounter = listOf(
-                        filtered.substringAfter('+').substringBefore(',').toInt(),
-                        //filtered.substringAfter(',').substringAfter(',').toInt()
-                    ).maxOrNull() ?: -1
+
+                    firstCommitCounter = filtered.substringBefore(',').toInt()
+                    secondCommitCounter = filtered.substringAfter('+').substringBefore(',').toInt()
                     isCode = true
                     continuousRedLineCount = 0
                     continue
