@@ -1,8 +1,5 @@
 package com.example.aclass.diff.viewholder
 
-import android.text.SpannableStringBuilder
-import androidx.core.view.doOnNextLayout
-import androidx.core.view.doOnPreDraw
 import androidx.recyclerview.widget.RecyclerView
 import com.example.aclass.databinding.ItemDiffSectionTwoFilesBinding
 import com.example.aclass.diff.DiffRecyclerItem

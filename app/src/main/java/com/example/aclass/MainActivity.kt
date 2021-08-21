@@ -1,10 +1,9 @@
 package com.example.aclass
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.annotation.StringRes
+import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI.setupActionBarWithNavController
 import com.example.aclass.databinding.ActivityMainBinding
 import com.google.android.material.snackbar.Snackbar

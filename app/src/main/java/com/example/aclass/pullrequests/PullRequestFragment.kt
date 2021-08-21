@@ -1,20 +1,20 @@
 package com.example.aclass.pullrequests
 
 import android.os.Bundle
-import androidx.transition.TransitionManager
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.transition.TransitionManager
 import com.example.aclass.MainActivity
 import com.example.aclass.common.model.PullRequest
 import com.example.aclass.databinding.FragmentPullRequestBinding
 import com.example.aclass.pullrequests.PullRequestFragmentViewModel.ViewState
-import dagger.hilt.android.AndroidEntryPoint
 import com.google.android.material.transition.MaterialSharedAxis
+import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class PullRequestFragment : Fragment() {

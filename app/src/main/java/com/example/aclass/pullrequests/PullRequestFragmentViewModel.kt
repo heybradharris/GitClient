@@ -4,13 +4,11 @@ import androidx.annotation.StringRes
 import androidx.lifecycle.*
 import com.example.aclass.R
 import com.example.aclass.common.di.IoDispatcher
-import com.example.aclass.common.di.MainDispatcher
 import com.example.aclass.common.model.PullRequest
 import com.example.aclass.common.repository.RepoRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel

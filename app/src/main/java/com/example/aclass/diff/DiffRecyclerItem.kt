@@ -1,7 +1,5 @@
 package com.example.aclass.diff
 
-import android.text.SpannableString
-
 sealed class DiffRecyclerItem {
     class Title(val title: String) : DiffRecyclerItem()
     class SectionTwoFiles(

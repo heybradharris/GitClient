@@ -1,9 +1,5 @@
 package com.example.aclass.diff
 
-import android.graphics.Color
-import android.text.SpannableString
-import android.text.TextUtils
-import android.text.style.BackgroundColorSpan
 import androidx.annotation.StringRes
 import androidx.lifecycle.*
 import com.example.aclass.R
@@ -15,7 +11,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel

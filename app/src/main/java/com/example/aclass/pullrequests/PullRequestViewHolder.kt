@@ -7,7 +7,6 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.aclass.common.model.PullRequest
 import com.example.aclass.databinding.ItemPullRequestBinding
-import java.lang.IllegalArgumentException
 
 class PullRequestViewHolder(
     private val binding : ItemPullRequestBinding

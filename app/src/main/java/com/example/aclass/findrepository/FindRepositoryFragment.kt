@@ -6,11 +6,11 @@ import android.os.Build
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.get
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
@@ -19,9 +19,9 @@ import com.example.aclass.R
 import com.example.aclass.common.util.event.EventObserver
 import com.example.aclass.common.util.getColorFromAttr
 import com.example.aclass.databinding.FragmentFindRepositoryBinding
-import com.google.android.material.chip.Chip
 import com.example.aclass.findrepository.FindRepositoryFragmentViewModel.ViewEvent
 import com.google.android.material.animation.AnimationUtils
+import com.google.android.material.chip.Chip
 import com.google.android.material.transition.MaterialSharedAxis
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
