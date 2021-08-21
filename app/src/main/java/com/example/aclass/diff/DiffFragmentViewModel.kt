@@ -131,6 +131,9 @@ class DiffFragmentViewModel @Inject constructor(
                         SpannableString(line)
                     }
 
+                    if (lineNumberRange.contains("@@ -17,7 +17,7"))
+                        println("hey")
+
                     if (isGreen && continuousRedLineCount == 0) {
                         firstCommitLines = TextUtils.concat(firstCommitLines, "\n")
                         secondCommitLines = TextUtils.concat(secondCommitLines, span, "\n")
@@ -148,14 +151,14 @@ class DiffFragmentViewModel @Inject constructor(
 
                             firstCommitLines = TextUtils.concat(firstCommitLines, span, "\n")
                             secondCommitLines = TextUtils.concat(secondCommitLines, span, "\n")
-
-                            continuousRedLineCount = 0
                         } else {
                             firstCommitLines = TextUtils.concat(firstCommitLines, span, "\n")
                             secondCommitLines = TextUtils.concat(secondCommitLines, span, "\n")
                         }
                     }
                 }
+
+                continuousRedLineCount = 0
             }
 
             // add last
@@ -178,36 +181,6 @@ class DiffFragmentViewModel @Inject constructor(
         }
 
         return items
-    }
-
-    private fun addSection(
-        isOneFile: Boolean,
-        lineNumberRange: String,
-        code: List<String>,
-        diffRecyclerItems: MutableList<DiffRecyclerItem>
-    ) {
-        if (isOneFile) {
-            //diffRecyclerItems.add(DiffRecyclerItem.SectionOneFile(lineNumberRange, code))
-            return
-        }
-
-        val firstCommitLines = mutableListOf<String>()
-        val secondCommitLines = mutableListOf<String>()
-        val stack = Stack<String>()
-
-        for (line in code) {
-            if (line.startsWith("+")) {
-
-            } else if (line.startsWith("-")) {
-                firstCommitLines.add(line)
-
-            } else {
-                firstCommitLines.add(line)
-                secondCommitLines.add(line)
-            }
-        }
-
-
     }
 
     private fun checkForTitle(
