@@ -10,10 +10,13 @@ class DiffParser {
         fun parseDiff(diff: String): List<DiffRecyclerItem> {
             val items = mutableListOf<DiffRecyclerItem>()
 
-            var lineNumberRange = ""
             var isCode = false
+            var firstCommitLineNumbers: CharSequence = "\n"
+            var secondCommitLineNumbers: CharSequence = "\n"
             var firstCommitLines: CharSequence = "\n"
             var secondCommitLines: CharSequence = "\n"
+            var firstCommitCounter = 0
+            var secondCommitCounter = 0
             var continuousRedLineCount = 0
 
             for (line in diff.lines()) {
@@ -22,13 +25,15 @@ class DiffParser {
                 if (title != "") {
                     if (isCode) {
                         items.add(
-                            DiffRecyclerItem.SectionTwoFiles(
-                                lineNumberRange,
+                            DiffRecyclerItem.Diff(
+                                firstCommitLineNumbers,
+                                secondCommitLineNumbers,
                                 firstCommitLines,
                                 secondCommitLines
                             )
                         )
-                        lineNumberRange = ""
+                        firstCommitLineNumbers = "\n"
+                        secondCommitLineNumbers = "\n"
                         isCode = false
                         firstCommitLines = "\n"
                         secondCommitLines = "\n"
@@ -40,16 +45,32 @@ class DiffParser {
                 if (line.startsWith("@@ ")) {
                     if (isCode) {
                         items.add(
-                            DiffRecyclerItem.SectionTwoFiles(
-                                lineNumberRange,
+                            DiffRecyclerItem.Diff(
+                                firstCommitLineNumbers,
+                                secondCommitLineNumbers,
                                 firstCommitLines,
                                 secondCommitLines
                             )
                         )
+                        firstCommitLineNumbers = "\n"
+                        secondCommitLineNumbers = "\n"
                         firstCommitLines = "\n"
                         secondCommitLines = "\n"
                     }
-                    lineNumberRange = line
+                    // assign range starts
+                    val filtered = line.substringAfter("@@")
+                        .substringBefore("@@")
+                        .filter { it.isDigit() || it == '+' ||  it == ','}
+                    println(filtered)
+                    // need another counter
+                    firstCommitCounter = listOf(
+                        filtered.substringBefore(',').toInt(),
+                        //filtered.substringAfter(',').substringBefore('+').toInt()
+                    ).maxOrNull() ?: -1
+                    secondCommitCounter = listOf(
+                        filtered.substringAfter('+').substringBefore(',').toInt(),
+                        //filtered.substringAfter(',').substringAfter(',').toInt()
+                    ).maxOrNull() ?: -1
                     isCode = true
                     continuousRedLineCount = 0
                     continue
@@ -83,33 +104,42 @@ class DiffParser {
 
                     if (isGreen && continuousRedLineCount == 0) {
                         firstCommitLines = TextUtils.concat(firstCommitLines, "\n")
+                        firstCommitLineNumbers = TextUtils.concat(firstCommitLineNumbers, "\n")
                         secondCommitLines = TextUtils.concat(secondCommitLines, span, "\n")
+                        secondCommitLineNumbers = TextUtils.concat(secondCommitLineNumbers, secondCommitCounter.toString(), "\n")
+                        secondCommitCounter++
                     } else if (isGreen && continuousRedLineCount > 0) {
                         secondCommitLines = TextUtils.concat(secondCommitLines, span, "\n")
+                        secondCommitLineNumbers = TextUtils.concat(secondCommitLineNumbers, secondCommitCounter.toString(), "\n")
+                        secondCommitCounter++
                         continuousRedLineCount--
                     } else if (isRed) {
                         continuousRedLineCount++
                         firstCommitLines = TextUtils.concat(firstCommitLines, span, "\n")
+                        firstCommitLineNumbers = TextUtils.concat(firstCommitLineNumbers, firstCommitCounter.toString(), "\n")
+                        firstCommitCounter++
                     } else {
                         if (continuousRedLineCount > 0) {
                             for (i in 0 until continuousRedLineCount) {
                                 secondCommitLines = TextUtils.concat(secondCommitLines, "\n")
                             }
                             continuousRedLineCount = 0
-
-                            firstCommitLines = TextUtils.concat(firstCommitLines, span, "\n")
-                            secondCommitLines = TextUtils.concat(secondCommitLines, span, "\n")
-                        } else {
-                            firstCommitLines = TextUtils.concat(firstCommitLines, span, "\n")
-                            secondCommitLines = TextUtils.concat(secondCommitLines, span, "\n")
                         }
+                        firstCommitLines = TextUtils.concat(firstCommitLines, span, "\n")
+                        firstCommitLineNumbers = TextUtils.concat(firstCommitLineNumbers, firstCommitCounter.toString(), "\n")
+                        firstCommitCounter++
+                        secondCommitLines = TextUtils.concat(secondCommitLines, span, "\n")
+                        secondCommitLineNumbers = TextUtils.concat(secondCommitLineNumbers, secondCommitCounter.toString(), "\n")
+                        secondCommitCounter++
                     }
                 }
             }
 
+            // add last Diff
             items.add(
-                DiffRecyclerItem.SectionTwoFiles(
-                    lineNumberRange,
+                DiffRecyclerItem.Diff(
+                    firstCommitLineNumbers,
+                    secondCommitLineNumbers,
                     firstCommitLines,
                     secondCommitLines
                 )

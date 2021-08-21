@@ -8,13 +8,13 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/line_number_range"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="8dp"
-        android:layout_marginBottom="4dp"
-        tools:text="Line Number Range" />
+<!--    <TextView-->
+<!--        android:id="@+id/line_number_range"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginHorizontal="8dp"-->
+<!--        android:layout_marginBottom="4dp"-->
+<!--        tools:text="Line Number Range" />-->
 
 <com.google.android.material.card.MaterialCardView
     android:layout_width="match_parent"
@@ -33,9 +33,21 @@
             android:layout_height="0dp"
             android:background="@color/diff_section_stroke"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/second_commit_scroll_view"
+            app:layout_constraintEnd_toStartOf="@+id/second_commit_line_numbers"
             app:layout_constraintStart_toEndOf="@+id/first_commit_scroll_view"
             app:layout_constraintTop_toTopOf="@+id/first_commit_scroll_view" />
+
+        <TextView
+            android:id="@+id/first_commit_line_numbers"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="2dp"
+            android:textColor="@color/black"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/first_commit_scroll_view"
+            tools:text="1234" />
 
         <HorizontalScrollView
             android:id="@+id/first_commit_scroll_view"
@@ -43,7 +55,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/divider"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/first_commit_line_numbers"
             app:layout_constraintTop_toTopOf="parent">
 
             <TextView
@@ -52,12 +64,24 @@
                 android:layout_height="wrap_content" />
         </HorizontalScrollView>
 
+        <TextView
+            android:id="@+id/second_commit_line_numbers"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="2dp"
+            android:textColor="@color/black"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/divider"
+            app:layout_constraintEnd_toStartOf="@+id/second_commit_scroll_view"
+            tools:text="1234" />
+
         <HorizontalScrollView
             android:id="@+id/second_commit_scroll_view"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/divider"
+            app:layout_constraintStart_toEndOf="@+id/second_commit_line_numbers"
             app:layout_constraintTop_toTopOf="parent">
 
             <TextView

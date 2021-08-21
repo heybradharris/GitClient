@@ -1,11 +1,11 @@
 package com.example.aclass.diff.viewholder
 
 import androidx.recyclerview.widget.RecyclerView
-import com.example.aclass.databinding.ItemDiffSectionTwoFilesBinding
+import com.example.aclass.databinding.ItemDiffBinding
 import com.example.aclass.diff.DiffRecyclerItem
 
-class DiffSectionTwoFilesViewHolder(
-    private val binding: ItemDiffSectionTwoFilesBinding
+class DiffViewHolder(
+    private val binding: ItemDiffBinding
 ) : RecyclerView.ViewHolder(binding.root) {
 
     init {
@@ -20,15 +20,14 @@ class DiffSectionTwoFilesViewHolder(
         }
     }
 
-    fun bind(diffItem: DiffRecyclerItem.SectionTwoFiles) {
+    fun bind(diffItem: DiffRecyclerItem.Diff) {
         binding.firstCommitScrollView.scrollTo(0, 0)
         binding.firstCommit.text = diffItem.firstCommitLines
         binding.secondCommitScrollView.scrollTo(0, 0)
         binding.secondCommit.text = diffItem.secondCommitLines
-        binding.lineNumberRange.text = diffItem.lineNumberRange
+        binding.firstCommitLineNumbers.text = diffItem.firstCommitLineNumbers
+        binding.secondCommitLineNumbers.text = diffItem.secondCommitLineNumbers
 
-        if (diffItem.lineNumberRange.contains("@@ -159,7")) {
-            println("hey")
-        }
+        // Hide side if blank
     }
 }

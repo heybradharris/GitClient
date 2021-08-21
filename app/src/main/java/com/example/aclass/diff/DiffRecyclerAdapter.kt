@@ -4,11 +4,9 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.aclass.R
-import com.example.aclass.databinding.ItemDiffSectionOneFileBinding
-import com.example.aclass.databinding.ItemDiffSectionTwoFilesBinding
+import com.example.aclass.databinding.ItemDiffBinding
 import com.example.aclass.databinding.ItemDiffTitleBinding
-import com.example.aclass.diff.viewholder.DiffSectionOneFileViewHolder
-import com.example.aclass.diff.viewholder.DiffSectionTwoFilesViewHolder
+import com.example.aclass.diff.viewholder.DiffViewHolder
 import com.example.aclass.diff.viewholder.DiffTitleViewHolder
 
 class DiffRecyclerAdapter(
@@ -20,8 +18,7 @@ class DiffRecyclerAdapter(
     override fun getItemViewType(position: Int): Int {
         return when (diffItems[position]) {
             is DiffRecyclerItem.Title -> R.layout.item_diff_title
-            is DiffRecyclerItem.SectionTwoFiles -> R.layout.item_diff_section_two_files
-            is DiffRecyclerItem.SectionOneFile -> R.layout.item_diff_section_one_file
+            is DiffRecyclerItem.Diff -> R.layout.item_diff
         }
     }
 
@@ -32,13 +29,9 @@ class DiffRecyclerAdapter(
                 val binding = ItemDiffTitleBinding.inflate(layoutInflater, parent, false)
                 DiffTitleViewHolder(binding)
             }
-            R.layout.item_diff_section_two_files -> {
-                val binding = ItemDiffSectionTwoFilesBinding.inflate(layoutInflater, parent, false)
-                DiffSectionTwoFilesViewHolder(binding)
-            }
-            R.layout.item_diff_section_one_file -> {
-                val binding = ItemDiffSectionOneFileBinding.inflate(layoutInflater, parent, false)
-                DiffSectionOneFileViewHolder(binding)
+            R.layout.item_diff -> {
+                val binding = ItemDiffBinding.inflate(layoutInflater, parent, false)
+                DiffViewHolder(binding)
             }
             else -> throw Exception("Unknown viewType for DiffAdapter $viewType")
         }
@@ -47,8 +40,7 @@ class DiffRecyclerAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (val item = diffItems[position]) {
             is DiffRecyclerItem.Title -> { (holder as DiffTitleViewHolder).bind(item) }
-            is DiffRecyclerItem.SectionTwoFiles -> { (holder as DiffSectionTwoFilesViewHolder).bind(item) }
-            is DiffRecyclerItem.SectionOneFile -> { (holder as DiffSectionOneFileViewHolder). bind(item) }
+            is DiffRecyclerItem.Diff -> { (holder as DiffViewHolder).bind(item) }
         }
     }
 
