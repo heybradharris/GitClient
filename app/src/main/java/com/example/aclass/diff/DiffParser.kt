@@ -4,7 +4,6 @@ import android.graphics.Color
 import android.text.SpannableString
 import android.text.TextUtils
 import android.text.style.BackgroundColorSpan
-import kotlinx.coroutines.withContext
 
 class DiffParser {
     companion object {
@@ -13,39 +12,26 @@ class DiffParser {
 
             var lineNumberRange = ""
             var isCode = false
-            var isOneFile = false
-            var firstCommitLines: CharSequence = ""
-            var secondCommitLines: CharSequence = ""
+            var firstCommitLines: CharSequence = "\n"
+            var secondCommitLines: CharSequence = "\n"
             var continuousRedLineCount = 0
 
             for (line in diff.lines()) {
-                if (line.startsWith("deleted file mode") || line.startsWith("new file mode"))
-                    isOneFile = true
 
                 val title = checkForTitle(line)
                 if (title != "") {
                     if (isCode) {
-                        if (isOneFile) {
-                            items.add(
-                                DiffRecyclerItem.SectionOneFile(
-                                    lineNumberRange,
-                                    secondCommitLines
-                                )
+                        items.add(
+                            DiffRecyclerItem.SectionTwoFiles(
+                                lineNumberRange,
+                                firstCommitLines,
+                                secondCommitLines
                             )
-                        } else {
-                            items.add(
-                                DiffRecyclerItem.SectionTwoFiles(
-                                    lineNumberRange,
-                                    firstCommitLines,
-                                    secondCommitLines
-                                )
-                            )
-                        }
+                        )
                         lineNumberRange = ""
                         isCode = false
-                        isOneFile = false
-                        firstCommitLines = ""
-                        secondCommitLines = ""
+                        firstCommitLines = "\n"
+                        secondCommitLines = "\n"
                     }
                     items.add(DiffRecyclerItem.Title(title))
                     continue
@@ -60,8 +46,8 @@ class DiffParser {
                                 secondCommitLines
                             )
                         )
-                        firstCommitLines = ""
-                        secondCommitLines = ""
+                        firstCommitLines = "\n"
+                        secondCommitLines = "\n"
                     }
                     lineNumberRange = line
                     isCode = true
@@ -70,25 +56,29 @@ class DiffParser {
                 }
 
                 if (isCode) {
-                    var isRed = false
-                    var isGreen = false
+                    var isRed: Boolean
+                    var isGreen: Boolean
 
-                    val span: SpannableString = if (line.startsWith("+")) {
-                        val str = SpannableString(line)
-                        str.setSpan(BackgroundColorSpan(Color.GREEN), 0, line.length, 0)
-                        isGreen = true
-                        isRed = false
-                        str
-                    } else if (line.startsWith("-")) {
-                        val str = SpannableString(line)
-                        str.setSpan(BackgroundColorSpan(Color.RED), 0, line.length, 0)
-                        isRed = true
-                        isGreen = false
-                        str
-                    } else {
-                        isGreen = false
-                        isRed = false
-                        SpannableString(line)
+                    val span: SpannableString = when {
+                        line.startsWith("+") -> {
+                            val str = SpannableString(line)
+                            str.setSpan(BackgroundColorSpan(Color.GREEN), 0, line.length, 0)
+                            isGreen = true
+                            isRed = false
+                            str
+                        }
+                        line.startsWith("-") -> {
+                            val str = SpannableString(line)
+                            str.setSpan(BackgroundColorSpan(Color.RED), 0, line.length, 0)
+                            isRed = true
+                            isGreen = false
+                            str
+                        }
+                        else -> {
+                            isGreen = false
+                            isRed = false
+                            SpannableString(line)
+                        }
                     }
 
                     if (isGreen && continuousRedLineCount == 0) {
@@ -117,24 +107,13 @@ class DiffParser {
                 }
             }
 
-            // add last
-            if (isOneFile) {
-                items.add(
-                    DiffRecyclerItem.SectionOneFile(
-                        lineNumberRange,
-                        secondCommitLines
-                    )
+            items.add(
+                DiffRecyclerItem.SectionTwoFiles(
+                    lineNumberRange,
+                    firstCommitLines,
+                    secondCommitLines
                 )
-            } else {
-                items.add(
-                    DiffRecyclerItem.SectionTwoFiles(
-                        lineNumberRange,
-                        firstCommitLines,
-                        secondCommitLines
-                    )
-                )
-            }
-
+            )
 
             return items
         }

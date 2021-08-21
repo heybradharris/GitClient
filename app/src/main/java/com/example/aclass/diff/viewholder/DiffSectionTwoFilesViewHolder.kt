@@ -29,9 +29,9 @@ class DiffSectionTwoFilesViewHolder(
         binding.secondCommitScrollView.scrollTo(0, 0)
         binding.secondCommit.text = diffItem.secondCommitLines
         binding.lineNumberRange.text = diffItem.lineNumberRange
-//
-//        if (diffItem.lineNumberRange.contains("@@ -17,7 +17,7 @@")) {
-//            println("hey")
-//        }
+
+        if (diffItem.lineNumberRange.contains("@@ -159,7")) {
+            println("hey")
+        }
     }
 }
