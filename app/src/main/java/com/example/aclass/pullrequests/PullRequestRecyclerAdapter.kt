@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.aclass.common.model.PullRequest
 import com.example.aclass.databinding.ItemPullRequestBinding
 
-class PullRequestAdapter() : RecyclerView.Adapter<PullRequestViewHolder>() {
+class PullRequestRecyclerAdapter : RecyclerView.Adapter<PullRequestViewHolder>() {
 
     private val pullRequestItems = ArrayList<PullRequest>()
 

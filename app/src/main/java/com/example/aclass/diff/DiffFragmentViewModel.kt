@@ -1,5 +1,9 @@
 package com.example.aclass.diff
 
+import android.graphics.Color
+import android.text.SpannableString
+import android.text.TextUtils
+import android.text.style.BackgroundColorSpan
 import androidx.annotation.StringRes
 import androidx.lifecycle.*
 import com.example.aclass.R
@@ -36,31 +40,8 @@ class DiffFragmentViewModel @Inject constructor(
         viewModelScope.launch(ioDispatcher) {
             try {
                 val diff = repoRepository.getDiff(args.owner, args.repo, args.number)
-                val diffRecyclerItems = parseDiff(diff)
-
-                val sb = StringBuilder()
-
-                for (item in diffRecyclerItems) {
-                    if (item is DiffRecyclerItem.Title) {
-                        sb.append(item.title + "\n")
-                    }
-
-                    if (item is DiffRecyclerItem.SectionOneFile) {
-                        sb.append(item.lineNumberRange + "\n")
-
-                        for (me in item.commitLines)
-                            sb.append(me + "\n")
-                    }
-
-                    if (item is DiffRecyclerItem.SectionTwoFiles) {
-                        sb.append(item.lineNumberRange + "\n")
-
-                        for (me in item.firstCommitLines)
-                            sb.append(me + "\n")
-                    }
-                }
-
-                _viewState.postValue(ViewState.Diff(sb.toString()))
+                val diffItems = parseDiff(diff)
+                _viewState.postValue(ViewState.Diff(diffItems))
             } catch (exception: Exception) {
                 _viewState.postValue(ViewState.Error(R.string.diff_failed_message))
             }
@@ -73,8 +54,10 @@ class DiffFragmentViewModel @Inject constructor(
         withContext(defaultDispatcher) {
             var lineNumberRange = ""
             var isCode = false
-            val code = mutableListOf<String>()
             var isOneFile = false
+            var firstCommitLines: CharSequence = ""
+            var secondCommitLines: CharSequence = ""
+            var continuousRedLineCount = 0
 
             for (line in diff.lines()) {
                 if (line.startsWith("deleted file mode") || line.startsWith("new file mode"))
@@ -87,22 +70,23 @@ class DiffFragmentViewModel @Inject constructor(
                             items.add(
                                 DiffRecyclerItem.SectionOneFile(
                                     lineNumberRange,
-                                    code.toList()
+                                    secondCommitLines
                                 )
                             )
                         } else {
                             items.add(
                                 DiffRecyclerItem.SectionTwoFiles(
                                     lineNumberRange,
-                                    code.toList(),
-                                    code.toList()
+                                    firstCommitLines,
+                                    secondCommitLines
                                 )
                             )
                         }
                         lineNumberRange = ""
                         isCode = false
                         isOneFile = false
-                        code.clear()
+                        firstCommitLines = ""
+                        secondCommitLines = ""
                     }
                     items.add(DiffRecyclerItem.Title(title))
                     continue
@@ -113,11 +97,12 @@ class DiffFragmentViewModel @Inject constructor(
                         items.add(
                             DiffRecyclerItem.SectionTwoFiles(
                                 lineNumberRange,
-                                code.toList(),
-                                code.toList()
+                                firstCommitLines,
+                                secondCommitLines
                             )
                         )
-                        code.clear()
+                        firstCommitLines = ""
+                        secondCommitLines = ""
                     }
                     lineNumberRange = line
                     isCode = true
@@ -125,7 +110,51 @@ class DiffFragmentViewModel @Inject constructor(
                 }
 
                 if (isCode) {
-                    code.add(line)
+                    var isRed = false
+                    var isGreen = false
+
+                    val span: SpannableString = if (line.startsWith("+")) {
+                        val str = SpannableString(line)
+                        str.setSpan(BackgroundColorSpan(Color.GREEN), 0, line.length, 0)
+                        isGreen = true
+                        isRed = false
+                        str
+                    } else if (line.startsWith("-")) {
+                        val str = SpannableString(line)
+                        str.setSpan(BackgroundColorSpan(Color.RED), 0, line.length, 0)
+                        isRed = true
+                        isGreen = false
+                        str
+                    } else {
+                        isGreen = false
+                        isRed = false
+                        SpannableString(line)
+                    }
+
+                    if (isGreen && continuousRedLineCount == 0) {
+                        firstCommitLines = TextUtils.concat(firstCommitLines, "\n")
+                        secondCommitLines = TextUtils.concat(secondCommitLines, span, "\n")
+
+                    } else if (isGreen && continuousRedLineCount > 0) {
+                        secondCommitLines = TextUtils.concat(secondCommitLines, span, "\n")
+                        continuousRedLineCount--
+                    } else if (isRed) {
+                        continuousRedLineCount++
+                        firstCommitLines = TextUtils.concat(firstCommitLines, span, "\n")
+                    } else {
+                        if (continuousRedLineCount > 0) {
+                            for (i in 0 until continuousRedLineCount)
+                                secondCommitLines = TextUtils.concat(secondCommitLines, "\n")
+
+                            firstCommitLines = TextUtils.concat(firstCommitLines, span, "\n")
+                            secondCommitLines = TextUtils.concat(secondCommitLines, span, "\n")
+
+                            continuousRedLineCount = 0
+                        } else {
+                            firstCommitLines = TextUtils.concat(firstCommitLines, span, "\n")
+                            secondCommitLines = TextUtils.concat(secondCommitLines, span, "\n")
+                        }
+                    }
                 }
             }
 
@@ -134,15 +163,15 @@ class DiffFragmentViewModel @Inject constructor(
                 items.add(
                     DiffRecyclerItem.SectionOneFile(
                         lineNumberRange,
-                        code.toList()
+                        secondCommitLines
                     )
                 )
             } else {
                 items.add(
                     DiffRecyclerItem.SectionTwoFiles(
                         lineNumberRange,
-                        code.toList(),
-                        code.toList()
+                        firstCommitLines,
+                        secondCommitLines
                     )
                 )
             }
@@ -196,7 +225,7 @@ class DiffFragmentViewModel @Inject constructor(
 
     sealed class ViewState {
         class Diff(
-            val data: String
+            val diffItems: List<DiffRecyclerItem>
         ) : ViewState()
 
         object Loading : ViewState()

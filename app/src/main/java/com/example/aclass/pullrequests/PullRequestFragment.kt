@@ -40,7 +40,7 @@ class PullRequestFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         observeViewState()
-        binding.recyclerView.adapter = PullRequestAdapter()
+        binding.recyclerView.adapter = PullRequestRecyclerAdapter()
         binding.checkbox.setOnCheckedChangeListener { _, isChecked -> viewModel.onChecked(isChecked) }
     }
 
@@ -75,7 +75,7 @@ class PullRequestFragment : Fragment() {
         val transition = MaterialSharedAxis(MaterialSharedAxis.Z, true)
         TransitionManager.beginDelayedTransition(view as ViewGroup, transition)
 
-        (binding.recyclerView.adapter as PullRequestAdapter).submitList(pullRequestItems)
+        (binding.recyclerView.adapter as PullRequestRecyclerAdapter).submitList(pullRequestItems)
 
         binding.progressIndicator.isVisible = false
         binding.recyclerView.isVisible = true

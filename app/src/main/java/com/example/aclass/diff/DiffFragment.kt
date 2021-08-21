@@ -8,10 +8,12 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.transition.TransitionManager
 import com.example.aclass.MainActivity
 import com.example.aclass.databinding.FragmentDiffBinding
 import com.example.aclass.diff.DiffFragmentViewModel.ViewState
 import com.example.aclass.pullrequests.PullRequestFragmentViewModel
+import com.example.aclass.pullrequests.PullRequestRecyclerAdapter
 import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -46,8 +48,7 @@ class DiffFragment : Fragment() {
             when (viewState) {
                 is ViewState.Loading -> { showLoadingIndicator() }
                 is ViewState.Diff -> {
-                    binding.text.isVisible = true
-                    binding.text.text = viewState.data
+                    showDiff(viewState.diffItems)
                 }
                 is ViewState.Error -> {
                     (requireActivity() as MainActivity).showSnackbar(viewState.stringId)
@@ -57,8 +58,18 @@ class DiffFragment : Fragment() {
         })
     }
 
+    private fun showDiff(diffItems: List<DiffRecyclerItem>) {
+        val transition = MaterialSharedAxis(MaterialSharedAxis.Z, true)
+        TransitionManager.beginDelayedTransition(view as ViewGroup, transition)
+
+        binding.recyclerView.adapter = DiffRecyclerAdapter(diffItems)
+
+        binding.progressIndicator.isVisible = false
+        binding.recyclerView.isVisible = true
+    }
+
     private fun showLoadingIndicator() {
-        binding.text.isVisible = false
+        binding.recyclerView.isVisible = false
         binding.progressIndicator.isVisible = true
     }
 
