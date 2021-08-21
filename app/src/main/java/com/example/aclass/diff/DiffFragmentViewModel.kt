@@ -49,8 +49,6 @@ class DiffFragmentViewModel @Inject constructor(
         }
     }
 
-
-
     sealed class ViewState {
         class Diff(
             val diffItems: List<DiffRecyclerItem>

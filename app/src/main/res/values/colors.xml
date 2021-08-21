@@ -8,4 +8,7 @@
     <color name="yellow_700">#FFB413</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <color name="diff_section_background">#AAAAAA</color>
+    <color name="diff_section_stroke">#3D3D3D</color>
 </resources>
