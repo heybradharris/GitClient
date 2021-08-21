@@ -19,7 +19,7 @@ class DiffParser {
             var secondCommitCounter = 0
             var continuousRedLineCount = 0
 
-            for (line in diff.lines()) {
+            for (line in diff.trimEnd().lines()) {
 
                 val title = checkForTitle(line)
                 if (title != "") {
@@ -122,9 +122,11 @@ class DiffParser {
                         if (continuousRedLineCount > 0) {
                             for (i in 0 until continuousRedLineCount) {
                                 secondCommitLines = TextUtils.concat(secondCommitLines, "\n")
+                                secondCommitLineNumbers = TextUtils.concat(secondCommitLineNumbers, "\n")
                             }
                             continuousRedLineCount = 0
                         }
+                        println(line)
                         firstCommitLines = TextUtils.concat(firstCommitLines, span, "\n")
                         firstCommitLineNumbers = TextUtils.concat(firstCommitLineNumbers, firstCommitCounter.toString(), "\n")
                         firstCommitCounter++
