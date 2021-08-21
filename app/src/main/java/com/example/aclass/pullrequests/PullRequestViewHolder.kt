@@ -43,6 +43,7 @@ class PullRequestViewHolder(
         val path = diffUrl.substringAfter("com/").split("/")
 
         val action = PullRequestFragmentDirections.actionPullRequestFragmentToDiffFragment(
+            pullRequest?.title ?: "Diff",
             path[0],
             path[1],
             number,
