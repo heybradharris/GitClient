@@ -10,6 +10,7 @@ import com.example.aclass.R
 import com.example.aclass.common.di.DefaultDispatcher
 import com.example.aclass.common.di.IoDispatcher
 import com.example.aclass.common.repository.RepoRepository
+import com.example.aclass.diff.DiffParser.Companion.parseDiff
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
@@ -40,7 +41,7 @@ class DiffFragmentViewModel @Inject constructor(
         viewModelScope.launch(ioDispatcher) {
             try {
                 val diff = repoRepository.getDiff(args.owner, args.repo, args.number)
-                val diffItems = parseDiff(diff)
+                val diffItems = withContext(defaultDispatcher) { parseDiff(diff) }
                 _viewState.postValue(ViewState.Diff(diffItems))
             } catch (exception: Exception) {
                 _viewState.postValue(ViewState.Error(R.string.diff_failed_message))
@@ -48,153 +49,7 @@ class DiffFragmentViewModel @Inject constructor(
         }
     }
 
-    private suspend fun parseDiff(diff: String): List<DiffRecyclerItem> {
-        val items = mutableListOf<DiffRecyclerItem>()
 
-        withContext(defaultDispatcher) {
-            var lineNumberRange = ""
-            var isCode = false
-            var isOneFile = false
-            var firstCommitLines: CharSequence = ""
-            var secondCommitLines: CharSequence = ""
-            var continuousRedLineCount = 0
-
-            for (line in diff.lines()) {
-                if (line.startsWith("deleted file mode") || line.startsWith("new file mode"))
-                    isOneFile = true
-
-                val title = checkForTitle(line)
-                if (title != "") {
-                    if (isCode) {
-                        if (isOneFile) {
-                            items.add(
-                                DiffRecyclerItem.SectionOneFile(
-                                    lineNumberRange,
-                                    secondCommitLines
-                                )
-                            )
-                        } else {
-                            items.add(
-                                DiffRecyclerItem.SectionTwoFiles(
-                                    lineNumberRange,
-                                    firstCommitLines,
-                                    secondCommitLines
-                                )
-                            )
-                        }
-                        lineNumberRange = ""
-                        isCode = false
-                        isOneFile = false
-                        firstCommitLines = ""
-                        secondCommitLines = ""
-                    }
-                    items.add(DiffRecyclerItem.Title(title))
-                    continue
-                }
-
-                if (line.startsWith("@@ ")) {
-                    if (isCode) {
-                        items.add(
-                            DiffRecyclerItem.SectionTwoFiles(
-                                lineNumberRange,
-                                firstCommitLines,
-                                secondCommitLines
-                            )
-                        )
-                        firstCommitLines = ""
-                        secondCommitLines = ""
-                    }
-                    lineNumberRange = line
-                    isCode = true
-                    continue
-                }
-
-                if (isCode) {
-                    var isRed = false
-                    var isGreen = false
-
-                    val span: SpannableString = if (line.startsWith("+")) {
-                        val str = SpannableString(line)
-                        str.setSpan(BackgroundColorSpan(Color.GREEN), 0, line.length, 0)
-                        isGreen = true
-                        isRed = false
-                        str
-                    } else if (line.startsWith("-")) {
-                        val str = SpannableString(line)
-                        str.setSpan(BackgroundColorSpan(Color.RED), 0, line.length, 0)
-                        isRed = true
-                        isGreen = false
-                        str
-                    } else {
-                        isGreen = false
-                        isRed = false
-                        SpannableString(line)
-                    }
-
-                    if (lineNumberRange.contains("@@ -17,7 +17,7"))
-                        println("hey")
-
-                    if (isGreen && continuousRedLineCount == 0) {
-                        firstCommitLines = TextUtils.concat(firstCommitLines, "\n")
-                        secondCommitLines = TextUtils.concat(secondCommitLines, span, "\n")
-
-                    } else if (isGreen && continuousRedLineCount > 0) {
-                        secondCommitLines = TextUtils.concat(secondCommitLines, span, "\n")
-                        continuousRedLineCount--
-                    } else if (isRed) {
-                        continuousRedLineCount++
-                        firstCommitLines = TextUtils.concat(firstCommitLines, span, "\n")
-                    } else {
-                        if (continuousRedLineCount > 0) {
-                            for (i in 0 until continuousRedLineCount)
-                                secondCommitLines = TextUtils.concat(secondCommitLines, "\n")
-
-                            firstCommitLines = TextUtils.concat(firstCommitLines, span, "\n")
-                            secondCommitLines = TextUtils.concat(secondCommitLines, span, "\n")
-                        } else {
-                            firstCommitLines = TextUtils.concat(firstCommitLines, span, "\n")
-                            secondCommitLines = TextUtils.concat(secondCommitLines, span, "\n")
-                        }
-                    }
-                }
-
-                continuousRedLineCount = 0
-            }
-
-            // add last
-            if (isOneFile) {
-                items.add(
-                    DiffRecyclerItem.SectionOneFile(
-                        lineNumberRange,
-                        secondCommitLines
-                    )
-                )
-            } else {
-                items.add(
-                    DiffRecyclerItem.SectionTwoFiles(
-                        lineNumberRange,
-                        firstCommitLines,
-                        secondCommitLines
-                    )
-                )
-            }
-        }
-
-        return items
-    }
-
-    private fun checkForTitle(
-        line: String,
-    ): String {
-        val id = "diff --git"
-
-        if (line.startsWith(id)) {
-            val split = line.split("/")
-            return split[split.lastIndex]
-        }
-
-        return ""
-    }
 
     sealed class ViewState {
         class Diff(
@@ -204,21 +59,4 @@ class DiffFragmentViewModel @Inject constructor(
         object Loading : ViewState()
         class Error(@StringRes val stringId: Int) : ViewState()
     }
-
-    //                        if (isOneFile)
-//                            diffRecyclerItems.add(
-//                                DiffRecyclerItem.SectionOneFile(
-//                                    lineNumberRange,
-//                                    code.toList()
-//                                )
-//                            )
-//                        else
-
-    //                diffRecyclerItems.add(
-//                    DiffRecyclerItem.SectionOneFile(
-//                        lineNumberRange,
-//                        code.toList()
-//                    )
-//                )
-//            else
 }
