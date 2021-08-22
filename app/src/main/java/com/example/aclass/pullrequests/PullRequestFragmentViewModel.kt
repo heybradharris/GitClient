@@ -26,9 +26,6 @@ class PullRequestFragmentViewModel @Inject constructor(
 
     private var pullRequestItems: List<PullRequest> = mutableListOf()
 
-    private val openPullRequestItems: List<PullRequest>
-        get() = pullRequestItems.filter { it.state == "open" }
-
     init {
         getPullRequests()
     }
@@ -46,7 +43,7 @@ class PullRequestFragmentViewModel @Inject constructor(
     }
 
     fun onChecked(isChecked: Boolean) {
-        val items = if (isChecked) openPullRequestItems else pullRequestItems
+        val items = if (isChecked) PullRequestFilter.filterOnlyOpen(pullRequestItems) else pullRequestItems
         _viewState.value = ViewState.PullRequests(items)
     }
 
