@@ -20,11 +20,10 @@ class FindRepositoryFragmentViewModel : ViewModel() {
         "square/okhttp",
         "JakeWharton/butterknife",
         "google/gson",
-        "square/retrofit",
         "google/guava",
         "bumptech/glide",
-        "material-components/material-components-android",
-        "facebook/fresco"
+        "facebook/fresco",
+        "material-components/material-components-android"
     )
 
     fun onFindRepositoryButtonClicked() {
