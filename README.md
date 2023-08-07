@@ -1,3 +1,3 @@
 # Class
 
-Allowers user to view git commit changes for a specific repository.
+Allows user to view git commit changes for a specific repository.
