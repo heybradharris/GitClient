@@ -1,5 +1,6 @@
 package com.example.aclass.findrepository
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.ColorStateList
 import android.os.Build
@@ -21,6 +22,7 @@ import com.example.aclass.common.util.getColorFromAttr
 import com.example.aclass.databinding.FragmentFindRepositoryBinding
 import com.example.aclass.findrepository.FindRepositoryFragmentViewModel.ViewEvent
 import com.google.android.material.animation.AnimationUtils
+
 import com.google.android.material.chip.Chip
 import com.google.android.material.transition.MaterialSharedAxis
 import kotlinx.coroutines.delay
@@ -99,11 +101,12 @@ class FindRepositoryFragment : Fragment() {
         binding.root.findNavController().navigate(action)
     }
 
+    @SuppressLint("RestrictedApi")
     private fun chooseRandomRepo() {
         if (isRandomRepoAnimationActive) return
         isRandomRepoAnimationActive = true
 
-        val yellow = requireContext().getColorFromAttr(R.attr.colorSecondary)
+        val yellow = requireContext().getColorFromAttr(com.google.android.material.R.attr.colorSecondary)
         val numChildren = binding.flowLayout.childCount
         var currentChip = binding.flowLayout[Random.nextInt(numChildren)] as Chip
         var prevChip: Chip? = null
