@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Class</string>
+    <string name="app_name">GitClient</string>
     <string name="label_find_repository">Enter Repository</string>
     <string name="random_repository">Random Repository</string>
     <string name="owner_slash_repository">owner/repository</string>
